@@ -1,5 +1,10 @@
 # K8s - Container Orchestration Tool
-## General Commands
+## References
+- [K8s API reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#)
+- [kubectl Quick reference](https://kubernetes.io/docs/reference/kubectl/quick-reference/)
+- [kubectl (full) reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
+- [helm cli reference](https://helm.sh/docs/helm/)
+## Common General Commands
 #### `kubectl get all`:
 - returns all components created in the cluster
 - does not include configmap/secret
@@ -112,12 +117,22 @@ mychart/          # name of chart
   ...
 ```
 
-## General Commands
-### `helm install <chartname>`
+## Common General Commands
+### `helm repo add <repo-name> <repo-source>`
+- adds a helm repo as a source
+
+### `helm search repo <repo-name>`
+- show all charts available in repo
+
+### `helm install <what-to-name-deployment> <chartname>`
 - template files will be filled with values from `values.yaml`
 - deploys resources in chart
-- can override defaults:
+- can override defaults
+
+Examples
 ``` 
+helm install mongodb --values test-mongodb.yaml bitnami/mongodb
+or
 helm install --set version=2.0.0 
 or
 helm install --values=my-values.yaml <chartname>
@@ -140,3 +155,6 @@ version: 2.0.0
 
 ### `helm rollback <chartname>`
 - rollback to prior version of chart
+
+### `helm uninstall <deployment-name>`
+- removes all resources associated with deployment
