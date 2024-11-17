@@ -1,0 +1,9 @@
+# Must exist before Deployments/Statefulsets
+# kubectl apply -f mongo-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-config
+data:
+  mongo-url: mongo-service
+

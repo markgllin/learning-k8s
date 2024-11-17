@@ -1,0 +1,63 @@
+# Deployment & Service combined in 1 file
+#
+# needs to be created before webapp because webapp depends
+# on database to start.
+#
+# kubectl apply -f webapp.yaml
+#
+apiVersion: apps/v1
+kind: Deployment  # Blueprint for pods
+metadata:
+  name: webapp-deployment
+  labels:
+    app: webapp  # can give any k8s a label. Label - k/v pair attached to a resource
+spec:
+  replicas: 1 # how many pods to spin up
+  selector:
+    matchLabels:  # identifier indicating it belongs to the Deployment labeled 'webappdb'
+      app: webapp
+  template: # configuration for pod
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers: # can have multiple containers in a pod but usually just 1 service
+      - name: webapp
+        image: nanajanashia/k8s-demo-app:v1.0
+        ports:
+        - containerPort: 3000
+        env: # env variables required by container
+        - name: USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret # metadata name of secret to use (mongo-secret.yaml)
+              key: mongo-user
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-password
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:   # metadata name of configmap to use (mongo-config.yaml)
+              name: mongo-config
+              key: mongo-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service # endpoint to access webapp
+spec:
+  # NodePort - exposes the service on each node's IP at a static port
+  # will be accessible externally from IP address of cluster node (i.e. all the nodes that the cluster has)
+  # minikube only has 1 node
+  # see `kubectl get node` in `kubectl_cmds.md` to figure out what ip
+  type: NodePort 
+  selector:
+    app: webapp # identifier connecting Pod to service based on same label, allowing pods to fwd request to service
+  ports:
+    # Traffic comes in on nodePort, forwards to port on the service which then routes to targetPort on the pod(s).
+    - protocol: TCP
+      port: 3000        # port on which service will be exposed internally in cluster
+      targetPort: 3000  # port on the container inside pod to which traffic will be forwarded
+      nodePort: 30100   # port on each node's IP that will forward external traffic to service.
