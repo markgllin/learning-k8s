@@ -1,5 +1,9 @@
 # Must exist before Deployments/Statefulsets
 # kubectl apply -f mongo-config.yaml
+# 
+# equivalent to `kubectl apply -f mongo-config.yaml -n default`
+# where resources are created in default namespace
+#
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -4,6 +4,9 @@
 # on database to start.
 #
 # kubectl apply -f webapp.yaml
+# 
+# equivalent to `kubectl apply -f webapp.yaml -n default`
+# where resources are created in default namespace
 #
 apiVersion: apps/v1
 kind: Deployment  # Blueprint for pods

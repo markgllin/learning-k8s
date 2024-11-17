@@ -56,6 +56,53 @@ kubectl delete deployment webapp-deployment
 kubectl delete service mongo-deployment
 ```
 
+## Namespaces
+- way to organize resources
+- avoids conflicts/overwriting deployments if resources are name the same
+- grouping of resources inside a cluster
+- can limit access or set resource limits at namespace level
+- *cannot* access (most resources) across namespaces
+  - e.g. if 2 namespaces have an identical ConfigMap, both must have their own copy
+- *can* access service in another namespace
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+data:
+  db_url: mysql-service.database # *.database refers to namespace
+```
+- some components cannot be created in a Namespace
+  - must live globally in cluster and can't be isolated
+  - `kubectl api-resources --namespaced=[true|false]` to reveal what can/cannot be namespaced
+- k8s creates 4 namespaces by default
+  - `kubernetes-dashboard`: only with minikube
+  - `kube-system`: do not create/modify resources in in `kube-system`. Intended for system processes.
+  - `kube-public`: publicaly accessible data
+  - `kube-node-lease`: holds information on heartbeats (availability) of nodes
+  - `default`: where you create/provision your own resources
+
+#### `kubectl create namespace <namespace-name`:
+- creates new namespace for resources
+- can also create namespace through config file:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+  namespace: my-namespace # namespace to create resource in
+data:
+  db_url: mysql-service.database
+```
+
+## `kubens`
+Faster way to switch between k8s namespaces. Installed through [`kubectx`](https://github.com/ahmetb/kubectx).
+### General Commands
+#### `kubens`:
+- lists all namespaces
+#### `kubens <namespace>`:
+- switch to a specific namespace context
+- avoids needing to specify `-n | --namespace=` in every command
 # Helm
 Multiple features:
 - package manager
