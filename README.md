@@ -1,3 +1,4 @@
+## General Commands
 ### `kubectl get all`:
 - returns all components created in the cluster
 - does not include configmap/secret
@@ -39,5 +40,12 @@ kubectl get node
 # wide output
 # will output ip address of the node as well
 kubectl get node -o wide
+```
+## Cleaning up
+```
+kubectl delete <resource-type> <resource-name>
 
-###
+# e.g:
+kubectl delete deployment webapp-deployment
+kubectl delete service mongo-deployment
+```

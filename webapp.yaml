@@ -32,7 +32,7 @@ spec:
             secretKeyRef:
               name: mongo-secret # metadata name of secret to use (mongo-secret.yaml)
               key: mongo-user
-        - name: PASSWORD
+        - name: USER_PWD
           valueFrom:
             secretKeyRef:
               name: mongo-secret
